@@ -8,10 +8,10 @@ import javax.validation.constraints.*;
 import java.util.Collection;
 import java.util.UUID;
 
-@Entity
 @Data
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
+@Entity
 public class student
 {
     @Id
@@ -34,4 +34,3 @@ public class student
         this.subjects.addAll(subjects);
     }
 }
-

@@ -13,13 +13,8 @@ import java.util.UUID;
 @Service
 public class subjectService implements templateService<subject,subjectRepo>
 {
-    private subjectRepo subjectRepo;
-
     @Autowired
-    public subjectService(subjectRepo subjectRepo)
-    {
-        this.subjectRepo = subjectRepo;
-    }
+    private subjectRepo subjectRepo;
 
 
 
