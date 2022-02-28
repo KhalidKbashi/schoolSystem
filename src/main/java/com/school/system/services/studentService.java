@@ -44,8 +44,10 @@ public class studentService implements templateService<student, studentRepo>
     }
 
     @Override
-    public void update(student temp)
+    public void update(student temp,UUID id)
     {
+        temp.setId(id);
+        this.studentRepo.deleteById(id);
         this.studentRepo.save(temp);
     }
 

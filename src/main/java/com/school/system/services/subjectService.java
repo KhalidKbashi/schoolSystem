@@ -44,8 +44,10 @@ public class subjectService implements templateService<subject,subjectRepo>
     }
 
     @Override
-    public void update(subject temp)
+    public void update(subject temp,UUID id)
     {
+        temp.setId(id);
+        this.subjectRepo.deleteById(id);
         this.subjectRepo.save(temp);
     }
 

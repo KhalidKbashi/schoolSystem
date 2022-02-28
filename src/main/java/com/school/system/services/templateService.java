@@ -13,7 +13,7 @@ public interface templateService<entity,repo extends CrudRepository<entity, UUID
 
     public Object[] getAll();
 
-    public void update(entity temp);
+    public void update(entity temp,UUID id);
 
     public void patchUpdate(entity temp,UUID id);
 
