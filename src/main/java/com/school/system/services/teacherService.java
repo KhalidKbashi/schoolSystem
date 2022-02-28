@@ -13,8 +13,13 @@ import java.util.UUID;
 @Service
 public class teacherService implements templateService<teacher, teacherRepo>
 {
-    @Autowired
     private teacherRepo teacherRepo;
+
+    @Autowired
+    public teacherService(teacherRepo teacherRepo)
+    {
+        this.teacherRepo = teacherRepo;
+    }
 
 
 
