@@ -9,25 +9,27 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import javax.servlet.http.HttpServletRequest;
+
 @ControllerAdvice
-public class exceptionAdvisor extends ResponseEntityExceptionHandler
+public class exceptionHandlerAdvice extends ResponseEntityExceptionHandler
 {
 
     @ExceptionHandler(NotAcceptableDataException.class)
     public ResponseEntity<ErrorResponse> notAcceptableDataExceptionHandler(NotAcceptableDataException ex,
-            WebRequest webRequest)
+            HttpServletRequest webRequest)
     {
         ErrorResponse errorResponse = new ErrorResponse(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE,
-                webRequest.getContextPath(),System.currentTimeMillis());
+                webRequest.getRequestURI(),System.currentTimeMillis());
         return new ResponseEntity(errorResponse,errorResponse.getErrorCode());
     }
 
     @ExceptionHandler(RecordNotFoundException.class)
     public ResponseEntity<ErrorResponse> recordNotFoundExceptionHandler(RecordNotFoundException ex,
-            WebRequest webRequest)
+            HttpServletRequest webRequest)
     {
         ErrorResponse errorResponse = new ErrorResponse(ex.getMessage(), HttpStatus.NOT_FOUND,
-                webRequest.getContextPath(),System.currentTimeMillis());
+                webRequest.getRequestURI(),System.currentTimeMillis());
         return new ResponseEntity(errorResponse,errorResponse.getErrorCode());
     }
 
