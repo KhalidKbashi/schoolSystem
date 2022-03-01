@@ -10,8 +10,9 @@ import org.springframework.http.HttpStatus;
 @Getter
 public class ErrorResponse
 {
-    private final String massage;
-    private final HttpStatus errorCode;
+    private final String Massage;
+    private final HttpStatus ErrorCode;
+    private final String LocalizedMessage;
     private final String RequestedURL;
-    private final long timestamp;
+    private final long Timestamp;
 }

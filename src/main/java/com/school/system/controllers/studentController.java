@@ -6,11 +6,16 @@ import com.school.system.exceptions.exceptionClasses.RecordNotFoundException;
 import com.school.system.services.studentService;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.lang.reflect.Parameter;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -32,10 +37,8 @@ public class studentController
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public student getRequestById(@PathVariable("id") UUID id) throws NotAcceptableDataException,
-            RecordNotFoundException
+            RecordNotFoundException, MethodArgumentNotValidException, NoSuchMethodException
     {
-        if(id == null)
-            throw new NotAcceptableDataException("Missed ID value");
 
         student student = this.studentService.get(id);
 
