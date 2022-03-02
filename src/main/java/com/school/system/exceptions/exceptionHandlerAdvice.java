@@ -17,6 +17,19 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 public class exceptionHandlerAdvice extends ResponseEntityExceptionHandler
 {
     //todo Allign Error Response paylod
+    //NO_CONTENT
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> recordNotFoundExceptionHandler(Exception ex,
+            WebRequest request)
+    {
+        ErrorResponse errorResponse = new ErrorResponse(
+                "Global Exception thrown"
+                , HttpStatus.NO_CONTENT
+                ,ex.getLocalizedMessage()
+                , request.getDescription(false)
+                , System.currentTimeMillis());
+        return new ResponseEntity(errorResponse, errorResponse.getErrorCode());
+    }
     //NOT_ACCEPTABLE
     @ExceptionHandler(NotAcceptableDataException.class)
     public ResponseEntity<ErrorResponse> notAcceptableDataExceptionHandler(NotAcceptableDataException ex,

@@ -14,7 +14,8 @@ import javax.validation.Valid;
 import java.util.Objects;
 import java.util.UUID;
 
-@RestController("/teacher")
+@RestController
+@RequestMapping("/teacher")
 public class teacherController
 {
     private teacherService teacherService;

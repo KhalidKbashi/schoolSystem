@@ -14,7 +14,8 @@ import javax.validation.Valid;
 import java.util.Objects;
 import java.util.UUID;
 
-@RestController("/subject")
+@RestController
+@RequestMapping("/subject")
 public class subjectController
 {
     private subjectService subjectService;
