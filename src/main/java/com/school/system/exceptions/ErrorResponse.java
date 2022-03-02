@@ -15,4 +15,13 @@ public class ErrorResponse
     private final String LocalizedMessage;
     private final String RequestedURL;
     private final long Timestamp;
+
+    public String getErrorMessage()
+    {
+        return "Massage : "+this.Massage
+                +"\nRequested URL : "+this.RequestedURL
+                +"\nTimestamp : "+this.Timestamp
+                +"\nErrorCode : "+this.ErrorCode
+                +"\nDetailed Error Massage : "+this.LocalizedMessage;
+    }
 }

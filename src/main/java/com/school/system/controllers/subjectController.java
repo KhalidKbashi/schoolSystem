@@ -15,7 +15,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/subject")
+@RequestMapping("/api/subject")
 public class subjectController
 {
     private subjectService subjectService;

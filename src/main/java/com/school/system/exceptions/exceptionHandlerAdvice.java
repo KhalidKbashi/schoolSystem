@@ -19,7 +19,7 @@ public class exceptionHandlerAdvice extends ResponseEntityExceptionHandler
     //todo Allign Error Response paylod
     //NO_CONTENT
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> recordNotFoundExceptionHandler(Exception ex,
+    public ResponseEntity<String> recordNotFoundExceptionHandler(Exception ex,
             WebRequest request)
     {
         ErrorResponse errorResponse = new ErrorResponse(
@@ -28,11 +28,11 @@ public class exceptionHandlerAdvice extends ResponseEntityExceptionHandler
                 ,ex.getLocalizedMessage()
                 , request.getDescription(false)
                 , System.currentTimeMillis());
-        return new ResponseEntity(errorResponse, errorResponse.getErrorCode());
+        return new ResponseEntity(errorResponse.getErrorMessage(), errorResponse.getErrorCode());
     }
     //NOT_ACCEPTABLE
     @ExceptionHandler(NotAcceptableDataException.class)
-    public ResponseEntity<ErrorResponse> notAcceptableDataExceptionHandler(NotAcceptableDataException ex,
+    public ResponseEntity<String> notAcceptableDataExceptionHandler(NotAcceptableDataException ex,
             WebRequest request)
     {
         ErrorResponse errorResponse = new ErrorResponse(
@@ -41,11 +41,11 @@ public class exceptionHandlerAdvice extends ResponseEntityExceptionHandler
                 ,ex.getLocalizedMessage()
                 , request.getDescription(false)
                 , System.currentTimeMillis());
-        return new ResponseEntity(errorResponse, errorResponse.getErrorCode());
+        return new ResponseEntity(errorResponse.getErrorMessage(), errorResponse.getErrorCode());
     }
     //NOT_FOUND
     @ExceptionHandler(RecordNotFoundException.class)
-    public ResponseEntity<ErrorResponse> recordNotFoundExceptionHandler(RecordNotFoundException ex,
+    public ResponseEntity<String> recordNotFoundExceptionHandler(RecordNotFoundException ex,
             WebRequest request)
     {
         ErrorResponse errorResponse = new ErrorResponse(
@@ -54,7 +54,7 @@ public class exceptionHandlerAdvice extends ResponseEntityExceptionHandler
                 ,ex.getLocalizedMessage()
                 , request.getDescription(false)
                 , System.currentTimeMillis());
-        return new ResponseEntity(errorResponse, errorResponse.getErrorCode());
+        return new ResponseEntity(errorResponse.getErrorMessage(), errorResponse.getErrorCode());
     }
     //NOT_ACCEPTABLE
     @Override
@@ -67,7 +67,7 @@ public class exceptionHandlerAdvice extends ResponseEntityExceptionHandler
                 ,ex.getLocalizedMessage()
                 , request.getDescription(false)
                 , System.currentTimeMillis());
-        return new ResponseEntity(errorResponse, errorResponse.getErrorCode());
+        return new ResponseEntity(errorResponse.getErrorMessage(), errorResponse.getErrorCode());
     }
     //RESET_CONTENT
     @Override
@@ -81,7 +81,7 @@ public class exceptionHandlerAdvice extends ResponseEntityExceptionHandler
                 ,ex.getLocalizedMessage()
                 , request.getDescription(false)
                 , System.currentTimeMillis());
-        return new ResponseEntity(errorResponse, errorResponse.getErrorCode());
+        return new ResponseEntity(errorResponse.getErrorMessage(), errorResponse.getErrorCode());
     }
     //INTERNAL_SERVER_ERROR
     @Override
@@ -94,6 +94,6 @@ public class exceptionHandlerAdvice extends ResponseEntityExceptionHandler
                 ,ex.getLocalizedMessage()
                 , request.getDescription(false)
                 , System.currentTimeMillis());
-        return new ResponseEntity(errorResponse, errorResponse.getErrorCode());
+        return new ResponseEntity(errorResponse.getErrorMessage(), errorResponse.getErrorCode());
     }
 }
