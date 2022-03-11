@@ -37,10 +37,10 @@ public class subjectService implements templateService<subject,subjectRepo>
     }
 
     @Override
-    public Object[] getAll()
+    public Collection getAll()
     {
         Collection temp = (Collection) this.subjectRepo.findAll();
-        return temp.toArray();
+        return temp;
     }
 
     @Override
@@ -51,7 +51,6 @@ public class subjectService implements templateService<subject,subjectRepo>
         this.subjectRepo.save(temp);
     }
 
-    @Override
     public void patchUpdate(subject temp, UUID id)
     {
         Optional<subject> target = this.subjectRepo.findById(id);

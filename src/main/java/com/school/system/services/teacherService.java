@@ -37,10 +37,10 @@ public class teacherService implements templateService<teacher, teacherRepo>
     }
 
     @Override
-    public Object[] getAll()
+    public Collection getAll()
     {
         Collection temp = (Collection) this.teacherRepo.findAll();
-        return temp.toArray();
+        return temp;
     }
 
     @Override
@@ -51,7 +51,6 @@ public class teacherService implements templateService<teacher, teacherRepo>
         this.teacherRepo.save(temp);
     }
 
-    @Override
     public void patchUpdate(teacher temp, UUID id)
     {
         Optional<teacher> target = teacherRepo.findById(id);

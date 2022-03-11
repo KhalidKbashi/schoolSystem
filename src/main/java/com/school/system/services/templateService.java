@@ -11,11 +11,11 @@ public interface templateService<entity,repo extends CrudRepository<entity, UUID
 
     public entity get(UUID id);
 
-    public Object[] getAll();
+    public Collection getAll();
 
     public void update(entity temp,UUID id);
 
-    public void patchUpdate(entity temp,UUID id);
+    public default void patchUpdate(entity temp,UUID id){};
 
     public void delete(UUID id);
 

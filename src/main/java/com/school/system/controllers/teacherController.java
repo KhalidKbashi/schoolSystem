@@ -1,6 +1,7 @@
 package com.school.system.controllers;
 
 import com.school.system.entities.teacher;
+import com.school.system.exceptions.exceptionClasses.CollectionEmptyException;
 import com.school.system.exceptions.exceptionClasses.NotAcceptableDataException;
 import com.school.system.exceptions.exceptionClasses.RecordNotFoundException;
 import com.school.system.services.teacherService;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -31,8 +33,7 @@ public class teacherController
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public teacher getRequestById(@PathVariable("id") UUID id) throws NotAcceptableDataException,
-            RecordNotFoundException, MethodArgumentNotValidException, NoSuchMethodException
+    public teacher getRequestById(@PathVariable("id") UUID id) throws RecordNotFoundException
     {
 
         teacher teacher = this.teacherService.get(id);
@@ -40,6 +41,16 @@ public class teacherController
         if(teacher == null)
             throw new RecordNotFoundException("Teacher Not Found in db");
         return teacher;
+    }
+
+    @GetMapping("/all")
+    @ResponseStatus(HttpStatus.OK)
+    public List getAllRequest() throws CollectionEmptyException
+    {
+        List temp = List.copyOf(this.teacherService.getAll());
+        if(temp.isEmpty())
+            throw new CollectionEmptyException("There is no teachers data found in db");
+        return temp;
     }
 
     @PostMapping(path = "/")
@@ -61,7 +72,7 @@ public class teacherController
             throw new NotAcceptableDataException("Missed ID value");
 
         if(!this.teacherService.check(id))
-            throw new RecordNotFoundException("there is no subject with ID : "+id+ " in db to be deleted");
+            throw new RecordNotFoundException("there is no teacher with ID : "+id+ " in db to be deleted");
 
         this.teacherService.delete(id);
     }
@@ -76,7 +87,7 @@ public class teacherController
 
         this.teacherService.update(teacher,id);
     }
-
+    //NOT WORKING API -NEED TO UPDATE
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public void patchRequest(@PathVariable("id") @NonNull UUID id, @RequestBody teacher teacher)

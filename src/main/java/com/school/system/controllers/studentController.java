@@ -1,16 +1,24 @@
 package com.school.system.controllers;
 
+import com.school.system.HATEOAS.resourceAssemblers.studentAssembler;
+import com.school.system.HATEOAS.resourceSupports.studentModel;
+import com.school.system.dual;
 import com.school.system.entities.student;
+import com.school.system.entities.subject;
+import com.school.system.exceptions.exceptionClasses.CollectionEmptyException;
 import com.school.system.exceptions.exceptionClasses.NotAcceptableDataException;
 import com.school.system.exceptions.exceptionClasses.RecordNotFoundException;
 import com.school.system.services.studentService;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -19,11 +27,13 @@ import java.util.UUID;
 public class studentController
 {
     private studentService studentService;
+    private studentAssembler studentAssembler;
 
     @Autowired
-    public studentController(studentService studentService)
+    public studentController(studentService studentService, studentAssembler studentAssembler)
     {
         this.studentService = studentService;
+        this.studentAssembler = studentAssembler;
     }
 
 
@@ -31,15 +41,27 @@ public class studentController
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public student getRequestById(@PathVariable("id") UUID id) throws NotAcceptableDataException,
-            RecordNotFoundException, MethodArgumentNotValidException, NoSuchMethodException
+    public studentModel getRequestById(@PathVariable("id") UUID id) throws RecordNotFoundException
     {
 
         student student = this.studentService.get(id);
 
         if(student == null)
             throw new RecordNotFoundException("Student Not Found in db");
-        return student;
+
+        return this.studentAssembler.toModel(student);
+    }
+
+    @GetMapping(value = "/all")
+    @ResponseStatus(HttpStatus.OK)
+    public CollectionModel<studentModel> getAllRequest() throws CollectionEmptyException
+    {
+        List temp = List.copyOf(this.studentService.getAll());
+
+        if(temp.isEmpty())
+            throw new CollectionEmptyException("There is no students data found in db");
+
+        return this.studentAssembler.toCollectionModel(temp);
     }
 
     @PostMapping(path = "/")
@@ -69,7 +91,7 @@ public class studentController
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void putRequest(@PathVariable("id") @NonNull UUID id, @RequestBody student student)
+    public void putRequest(@PathVariable("id") @NonNull UUID id, @Valid @RequestBody student student)
     {
         if(!this.studentService.check(id))
             throw new RecordNotFoundException("student with ID: "+id+" not found");
@@ -77,14 +99,16 @@ public class studentController
         this.studentService.update(student,id);
     }
 
+    //NOT WORKING API -NEED TO UPDATE
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void patchRequest(@PathVariable("id") @NonNull UUID id, @RequestBody student student)
+    public void patchRequest(@PathVariable("id") @NonNull UUID id,
+            @Valid @RequestBody dual<student, List<UUID>> student_subjectUUIDs)
     {
         if(!this.studentService.check(id))
             throw new RecordNotFoundException("student with ID: "+id+" not found");
 
-        this.studentService.patchUpdate(student,id);
+        this.studentService.patchUpdate(student_subjectUUIDs,id);
     }
 
 }

@@ -1,5 +1,6 @@
 package com.school.system.exceptions;
 
+import com.school.system.exceptions.exceptionClasses.CollectionEmptyException;
 import com.school.system.exceptions.exceptionClasses.NotAcceptableDataException;
 import com.school.system.exceptions.exceptionClasses.RecordNotFoundException;
 import org.springframework.http.HttpHeaders;
@@ -38,6 +39,19 @@ public class exceptionHandlerAdvice extends ResponseEntityExceptionHandler
         ErrorResponse errorResponse = new ErrorResponse(
                 ex.getMessage()
                 , HttpStatus.NOT_ACCEPTABLE
+                ,ex.getLocalizedMessage()
+                , request.getDescription(false)
+                , System.currentTimeMillis());
+        return new ResponseEntity(errorResponse.getErrorMessage(), errorResponse.getErrorCode());
+    }
+    //NOT_ACCEPTABLE
+    @ExceptionHandler(CollectionEmptyException.class)
+    public ResponseEntity<String> notAcceptableDataExceptionHandler(CollectionEmptyException ex,
+            WebRequest request)
+    {
+        ErrorResponse errorResponse = new ErrorResponse(
+                ex.getMessage()
+                , HttpStatus.METHOD_FAILURE
                 ,ex.getLocalizedMessage()
                 , request.getDescription(false)
                 , System.currentTimeMillis());

@@ -27,10 +27,10 @@ public class student
 
     @ManyToMany(mappedBy = "students", cascade = {CascadeType.MERGE, CascadeType.DETACH,
             CascadeType.PERSIST, CascadeType.REFRESH}, fetch = FetchType.EAGER)
-    Collection<subject> subjects;
+    private Collection<subject> subjects;
 
-    public void addSubjectByID(Collection<subject> subjects)
+    public void addSubject(subject subject)
     {
-        this.subjects.addAll(subjects);
+        this.subjects.add(subject);
     }
 }
