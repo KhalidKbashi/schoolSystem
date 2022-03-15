@@ -1,13 +1,13 @@
 package com.school.system.entities;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import javax.validation.constraints.*;
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.UUID;
 
@@ -15,18 +15,19 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class subject
+@Builder
+public class subject implements Serializable
 {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
-    //todo add a method to auto store string into "This Way" style
-    @NotBlank @NotEmpty
+    //Not Needed because the Validation is done in DTO Class - Deleted for Optimizing Performance
+    /*@NotBlank @NotEmpty
     @Pattern(regexp = "[A-Za-z\\s]{3,}")
+    */
     private String name;
 
-    @Min(1) @Max(5)
+    //@Min(1) @Max(5)
     private int numOfHours;
 
 

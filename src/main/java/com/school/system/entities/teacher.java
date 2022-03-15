@@ -1,15 +1,12 @@
 package com.school.system.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.UUID;
 
@@ -17,21 +14,23 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class teacher
+@Builder
+public class teacher implements Serializable
 {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
-    //todo add a method to auto store string into "This Way" style
-    @NotBlank
+
+    //Not Needed because the Validation is done in DTO Class - Deleted for Optimizing Performance
+    /*@NotBlank
     @NotEmpty
+    */
     private String name;
 
-    @Min(18)@Max(75)
+    //@Min(18)@Max(75)
     private int age;
 
-    @Min(0)@Max(25)
+    //@Min(0)@Max(25)
     private int yearsOfExperience;
 
 
@@ -39,7 +38,7 @@ public class teacher
     @ManyToOne(cascade = {CascadeType.MERGE,CascadeType.DETACH,
             CascadeType.PERSIST,CascadeType.REFRESH},fetch = FetchType.EAGER)
     @JoinColumn(name = "subject_id")
-    subject subject;
+    private subject subject;
 
     public Collection<student> getStudents()
     {

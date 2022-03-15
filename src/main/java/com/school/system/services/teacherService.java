@@ -1,32 +1,49 @@
 package com.school.system.services;
 
+import com.school.system.DTOs.ElMapper;
+import com.school.system.DTOs.teacherDTO;
 import com.school.system.entities.teacher;
 import com.school.system.repos.teacherRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
-public class teacherService implements templateService<teacher, teacherRepo>
+public class teacherService implements templateService<teacher, teacherDTO>
 {
-    private teacherRepo teacherRepo;
+    private final subjectService subjectService;
+    private final teacherRepo teacherRepo;
+    private final ElMapper<teacher,teacherDTO> mapper;
 
     @Autowired
-    public teacherService(teacherRepo teacherRepo)
+    public teacherService(teacherRepo teacherRepo, ElMapper<teacher, teacherDTO> mapper,@Lazy subjectService subjectService)
     {
         this.teacherRepo = teacherRepo;
+        this.subjectService = subjectService;
+        this.mapper = new ElMapper<>
+                (
+                        //Function to change Teacher Object to TeacherDTO Object
+                        teacher -> new teacherDTO(teacher.getName(), teacher.getAge(),teacher.getYearsOfExperience()
+                                ,teacher.getSubject().getId())
+                        ,
+                        //Function to change TeacherDTO Object to Teacher Object
+                        teacherDTO -> new teacher(null, teacherDTO.getName(), teacherDTO.getAge()
+                                , teacherDTO.getYearsOfExperience(),this.subjectService.get(teacherDTO.getSubject()))
+                        ,
+                        //Function to Convert Teacher UUID Collection to full subject Object
+                        // send null because there is no Collections
+                        null
+                );
     }
 
 
 
     @Override
-    public UUID add(teacher teacher)
+    public UUID add(teacherDTO teacherDTO)
     {
-        return this.teacherRepo.save(teacher).getId();
+        return this.teacherRepo.save(mapper.toEntityObject(teacherDTO)).getId();
     }
 
     @Override
@@ -37,37 +54,42 @@ public class teacherService implements templateService<teacher, teacherRepo>
     }
 
     @Override
-    public Collection getAll()
+    public ArrayList<teacher> getAll()
     {
-        Collection temp = (Collection) this.teacherRepo.findAll();
-        return temp;
+        return (ArrayList<teacher>) this.teacherRepo.findAll();
     }
 
     @Override
-    public void update(teacher temp,UUID id)
+    public void update(teacherDTO teacherDTO,UUID id)
     {
-        temp.setId(id);
-        this.teacherRepo.deleteById(id);
-        this.teacherRepo.save(temp);
+        if(this.check(id))
+        {
+            this.teacherRepo.deleteById(id);
+            this.teacherRepo.save(this.mapper.toEntityObject(teacherDTO).builder().id(id).build());
+        }
     }
 
-    public void patchUpdate(teacher temp, UUID id)
+    public void patchUpdate(teacherDTO teacherDTO, UUID id)
     {
         Optional<teacher> target = teacherRepo.findById(id);
+
         if(target.isPresent())
         {
-            if(Objects.nonNull(temp.getName()))
-                target.get().setName(temp.getName());
+            if(!teacherDTO.getName().isBlank())
+                target.get().setName(teacherDTO.getName());
 
-            if(temp.getAge()!=0)
-                target.get().setAge(temp.getAge());
+            if(teacherDTO.getAge()!=0)
+                target.get().setAge(teacherDTO.getAge());
 
-            if(Objects.nonNull(temp.getSubject()))
-                target.get().setSubject(temp.getSubject());
+            if(Objects.nonNull(teacherDTO.getSubject()))
+                target.get().setSubject(this.subjectService.get(teacherDTO.getSubject()));
 
-            if(temp.getYearsOfExperience()!=0)
-                target.get().setYearsOfExperience(temp.getYearsOfExperience());
-        }
+            if(teacherDTO.getYearsOfExperience()!=0)
+                target.get().setYearsOfExperience(teacherDTO.getYearsOfExperience());
+
+            this.teacherRepo.save(target.get());
+        }else
+            System.out.println("subject not found , not added exception");
     }
 
     @Override

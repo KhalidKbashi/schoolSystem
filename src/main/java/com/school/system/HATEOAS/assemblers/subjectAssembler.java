@@ -1,6 +1,6 @@
-package com.school.system.HATEOAS.resourceAssemblers;
+package com.school.system.HATEOAS.assemblers;
 
-import com.school.system.HATEOAS.resourceSupports.subjectModel;
+import com.school.system.HATEOAS.models.subjectModel;
 import com.school.system.controllers.subjectController;
 import com.school.system.entities.subject;
 import org.springframework.hateoas.CollectionModel;

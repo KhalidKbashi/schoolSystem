@@ -1,36 +1,35 @@
 package com.school.system.controllers;
 
-import com.school.system.HATEOAS.resourceAssemblers.studentAssembler;
-import com.school.system.HATEOAS.resourceSupports.studentModel;
-import com.school.system.dual;
+import com.school.system.DTOs.studentDTO;
+import com.school.system.HATEOAS.assemblers.studentAssembler;
+import com.school.system.HATEOAS.models.studentModel;
 import com.school.system.entities.student;
-import com.school.system.entities.subject;
 import com.school.system.exceptions.exceptionClasses.CollectionEmptyException;
 import com.school.system.exceptions.exceptionClasses.NotAcceptableDataException;
 import com.school.system.exceptions.exceptionClasses.RecordNotFoundException;
 import com.school.system.services.studentService;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.hateoas.CollectionModel;
-import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
 @RestController
-@RequestMapping(path = "/api/student")
+@RequestMapping(path = "/api/student",produces = "application/HAL+JSON")
 public class studentController
 {
-    private studentService studentService;
-    private studentAssembler studentAssembler;
+    private final studentService studentService;
+    private final studentAssembler studentAssembler;
 
     @Autowired
-    public studentController(studentService studentService, studentAssembler studentAssembler)
+    public studentController(@Lazy studentService studentService, studentAssembler studentAssembler)
     {
         this.studentService = studentService;
         this.studentAssembler = studentAssembler;
@@ -46,7 +45,7 @@ public class studentController
 
         student student = this.studentService.get(id);
 
-        if(student == null)
+        if(Objects.isNull(student))
             throw new RecordNotFoundException("Student Not Found in db");
 
         return this.studentAssembler.toModel(student);
@@ -56,7 +55,7 @@ public class studentController
     @ResponseStatus(HttpStatus.OK)
     public CollectionModel<studentModel> getAllRequest() throws CollectionEmptyException
     {
-        List temp = List.copyOf(this.studentService.getAll());
+        List<student> temp = List.copyOf(this.studentService.getAll());
 
         if(temp.isEmpty())
             throw new CollectionEmptyException("There is no students data found in db");
@@ -66,12 +65,15 @@ public class studentController
 
     @PostMapping(path = "/")
     @ResponseStatus(HttpStatus.CREATED)
-    public UUID postRequest(@Valid @RequestBody student student) throws NotAcceptableDataException
+    public UUID postRequest(@Valid @RequestBody studentDTO studentDTO) throws NotAcceptableDataException
     {
-        if(Objects.isNull(student)) //works when the assertion in the entity class get removed
+        if(Objects.isNull(studentDTO)) //works when the assertion in the entity class get removed
             throw new NotAcceptableDataException("Student data is not send probably");
 
-        return this.studentService.add(student);
+        System.out.println("HIIIIIIIIIIIIIIIIIIIIIIii");
+        Arrays.stream(studentDTO.getSubject()).forEach(uuid -> System.out.println("id "+uuid));
+
+        return this.studentService.add(studentDTO);
     }
 
     @DeleteMapping("/{id}")
@@ -91,24 +93,22 @@ public class studentController
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void putRequest(@PathVariable("id") @NonNull UUID id, @Valid @RequestBody student student)
+    public void putRequest(@PathVariable("id") @NonNull UUID id, @Valid @RequestBody studentDTO studentDTO)
     {
         if(!this.studentService.check(id))
             throw new RecordNotFoundException("student with ID: "+id+" not found");
 
-        this.studentService.update(student,id);
+        this.studentService.update(studentDTO,id);
     }
 
-    //NOT WORKING API -NEED TO UPDATE
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void patchRequest(@PathVariable("id") @NonNull UUID id,
-            @Valid @RequestBody dual<student, List<UUID>> student_subjectUUIDs)
+    public void patchRequest(@PathVariable("id") @NonNull UUID id,@Valid @RequestBody  studentDTO studentDTO)
     {
         if(!this.studentService.check(id))
             throw new RecordNotFoundException("student with ID: "+id+" not found");
 
-        this.studentService.patchUpdate(student_subjectUUIDs,id);
+        this.studentService.patchUpdate(studentDTO,id);
     }
 
 }

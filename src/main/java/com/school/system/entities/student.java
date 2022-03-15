@@ -1,28 +1,32 @@
 package com.school.system.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import javax.persistence.*;
-import javax.validation.constraints.*;
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.UUID;
 
 @Data
 @NoArgsConstructor
-@JsonIgnoreProperties(ignoreUnknown = true)
+@AllArgsConstructor
 @Entity
-public class student
+@Builder
+public class student implements Serializable
 {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
-    //todo add a method to auto store string into "This Way" style
-    @NotBlank @NotEmpty
+
+    //Not Needed because the Validation is done in DTO Class
+    /*@NotBlank @NotEmpty
     @Pattern(regexp = "[A-Za-z\\s]{3,}")
+    */
     private String name;
 
-    @Min(12) @Max(23)
+    //@Min(12) @Max(23)
     private int age;
 
     @ManyToMany(mappedBy = "students", cascade = {CascadeType.MERGE, CascadeType.DETACH,

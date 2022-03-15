@@ -1,6 +1,6 @@
-package com.school.system.HATEOAS.resourceAssemblers;
+package com.school.system.HATEOAS.assemblers;
 
-import com.school.system.HATEOAS.resourceSupports.studentModel;
+import com.school.system.HATEOAS.models.studentModel;
 import com.school.system.controllers.studentController;
 import com.school.system.entities.student;
 import lombok.SneakyThrows;

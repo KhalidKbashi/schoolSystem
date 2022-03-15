@@ -1,23 +1,21 @@
 package com.school.system.services;
 
-import org.springframework.data.repository.CrudRepository;
-
 import java.util.Collection;
 import java.util.UUID;
 
-public interface templateService<entity,repo extends CrudRepository<entity, UUID>>
+public interface templateService<entity,entityDTO>
 {
-    public UUID add(entity temp);
+    UUID add(entityDTO temp);
 
-    public entity get(UUID id);
+    entity get(UUID id);
 
-    public Collection getAll();
+    Collection<entity> getAll();
 
-    public void update(entity temp,UUID id);
+    void update(entityDTO entityDTO, UUID id);
 
-    public default void patchUpdate(entity temp,UUID id){};
+    default void patchUpdate(entityDTO entityDTO, UUID id){}
 
-    public void delete(UUID id);
+    void delete(UUID id);
 
-    public boolean check(UUID id);
+    boolean check(UUID id);
 }

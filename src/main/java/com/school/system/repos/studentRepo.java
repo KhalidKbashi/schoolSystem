@@ -10,6 +10,6 @@ import java.util.UUID;
 @Repository
 public interface studentRepo extends CrudRepository<student, UUID>
 {
-    public student findByName(String name);
-    public Optional<student> findById(UUID Id);
+    student findByName(String name);
+    Optional<student> findById(UUID Id);
 }

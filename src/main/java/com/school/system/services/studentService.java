@@ -1,33 +1,58 @@
 package com.school.system.services;
 
-import com.school.system.dual;
+import com.school.system.DTOs.ElMapper;
+import com.school.system.DTOs.studentDTO;
 import com.school.system.entities.student;
-import com.school.system.entities.subject;
 import com.school.system.repos.studentRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
-public class studentService implements templateService<student, studentRepo>
+public class studentService implements templateService<student, studentDTO>
 {
-    private studentRepo studentRepo;
-    private subjectService subjectService;
+    private final studentRepo studentRepo;
+    private final subjectService subjectService;
+    private final ElMapper<student,studentDTO> mapper;
 
     @Autowired
-    public studentService(studentRepo studentRepo, com.school.system.services.subjectService subjectService)
+    public studentService(studentRepo studentRepo, @Lazy subjectService subjectService
+            , ElMapper<student,studentDTO> mapper)
     {
         this.studentRepo = studentRepo;
         this.subjectService = subjectService;
+
+        this.mapper = new ElMapper<>
+                (
+                        //Function to change Student Object to StudentDTO Object -toDTO()
+                        student -> new studentDTO(student.getName(), student.getAge(), (String[]) student.getSubjects()
+                                .stream().map(subject -> subject.getId()).toArray())
+                        ,
+                        //Function to change StudentDTO Object to Student Object -toEntity()
+                        studentDTO -> new student(null, studentDTO.getName(), studentDTO.getAge(),
+                                Arrays
+                                        .stream(studentDTO.getSubject())
+                                        .distinct()
+                                        .map(uuid -> this.subjectService.get(UUID.fromString(uuid)))
+                                        .collect(Collectors.toCollection(ArrayList::new)))
+                        ,
+                        //Function to Convert Subject UUID Collection to full subject Object
+                        uuids -> uuids.stream().distinct().map(uuid -> this.get(uuid)).collect(Collectors.toList())
+                );
     }
 
 
 
     @Override
-    public UUID add(student student)
+    public UUID add(studentDTO studentDTO)
     {
-        return this.studentRepo.save(student).getId();
+        return this.studentRepo.save(mapper.toEntityObject(studentDTO)) .getId();
     }
 
     @Override
@@ -38,36 +63,43 @@ public class studentService implements templateService<student, studentRepo>
     }
 
     @Override
-    public Collection getAll()
+    public ArrayList<student> getAll()
     {
-        Collection temp = (Collection) this.studentRepo.findAll();
-        return temp;
+        return (ArrayList<student>) this.studentRepo.findAll();
     }
 
     @Override
-    public void update(student temp,UUID id)
+    public void update(studentDTO studentDTO,UUID id)
     {
-        temp.setId(id);
-        this.studentRepo.deleteById(id);
-        this.studentRepo.save(temp);
+        if(this.check(id))
+        {
+            this.studentRepo.deleteById(id);
+            this.studentRepo.save(mapper.toEntityObject(studentDTO).builder().id(id).build());
+        }
+
     }
 
-    public void patchUpdate(dual<student, List<UUID>> temp, UUID id)
+    public void patchUpdate(studentDTO studentDTO, UUID id)
     {
         Optional<student> target = this.studentRepo.findById(id);
+
         if(target.isPresent())
         {
-            if(!temp.getFirst().getName().isBlank())
-                target.get().setName(temp.getFirst().getName());
+            if(!studentDTO.getName().isBlank())
+                target.get().setName(studentDTO.getName());
 
-            if(!temp.getSecond().isEmpty())
-            {
-                temp.getSecond().stream().distinct().
-                        map(uuid -> this.subjectService.get(uuid))
-                        .forEach(subject -> target.get().getSubjects().add(subject));
-            }
+            if(studentDTO.getAge()!=0)
+                target.get().setAge(studentDTO.getAge());
+
+            if(studentDTO.getSubject()==null)
+                target.get().getSubjects()
+                        .addAll(mapper.uuidsToEntitiesConverter(Arrays.stream(studentDTO.getSubject()
+                        ).distinct().map(s -> UUID.fromString(s)).collect(Collectors.toList())));
+
             this.studentRepo.save(target.get());
         }
+        else
+            System.out.println("student not found , not added exception");
     }
 
     @Override

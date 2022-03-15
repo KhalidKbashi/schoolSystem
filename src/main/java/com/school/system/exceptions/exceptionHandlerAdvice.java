@@ -18,7 +18,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 public class exceptionHandlerAdvice extends ResponseEntityExceptionHandler
 {
     //todo Allign Error Response paylod
-    //NO_CONTENT
+    /*//NO_CONTENT
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> recordNotFoundExceptionHandler(Exception ex,
             WebRequest request)
@@ -29,8 +29,8 @@ public class exceptionHandlerAdvice extends ResponseEntityExceptionHandler
                 ,ex.getLocalizedMessage()
                 , request.getDescription(false)
                 , System.currentTimeMillis());
-        return new ResponseEntity(errorResponse.getErrorMessage(), errorResponse.getErrorCode());
-    }
+        return new ResponseEntity<>(errorResponse.getErrorMessage(), errorResponse.getErrorCode());
+    }*/
     //NOT_ACCEPTABLE
     @ExceptionHandler(NotAcceptableDataException.class)
     public ResponseEntity<String> notAcceptableDataExceptionHandler(NotAcceptableDataException ex,
@@ -42,7 +42,7 @@ public class exceptionHandlerAdvice extends ResponseEntityExceptionHandler
                 ,ex.getLocalizedMessage()
                 , request.getDescription(false)
                 , System.currentTimeMillis());
-        return new ResponseEntity(errorResponse.getErrorMessage(), errorResponse.getErrorCode());
+        return new ResponseEntity<>(errorResponse.getErrorMessage(), errorResponse.getErrorCode());
     }
     //NOT_ACCEPTABLE
     @ExceptionHandler(CollectionEmptyException.class)
@@ -55,7 +55,7 @@ public class exceptionHandlerAdvice extends ResponseEntityExceptionHandler
                 ,ex.getLocalizedMessage()
                 , request.getDescription(false)
                 , System.currentTimeMillis());
-        return new ResponseEntity(errorResponse.getErrorMessage(), errorResponse.getErrorCode());
+        return new ResponseEntity<>(errorResponse.getErrorMessage(), errorResponse.getErrorCode());
     }
     //NOT_FOUND
     @ExceptionHandler(RecordNotFoundException.class)
@@ -68,7 +68,7 @@ public class exceptionHandlerAdvice extends ResponseEntityExceptionHandler
                 ,ex.getLocalizedMessage()
                 , request.getDescription(false)
                 , System.currentTimeMillis());
-        return new ResponseEntity(errorResponse.getErrorMessage(), errorResponse.getErrorCode());
+        return new ResponseEntity<>(errorResponse.getErrorMessage(), errorResponse.getErrorCode());
     }
     //NOT_ACCEPTABLE
     @Override
@@ -81,7 +81,7 @@ public class exceptionHandlerAdvice extends ResponseEntityExceptionHandler
                 ,ex.getLocalizedMessage()
                 , request.getDescription(false)
                 , System.currentTimeMillis());
-        return new ResponseEntity(errorResponse.getErrorMessage(), errorResponse.getErrorCode());
+        return new ResponseEntity<>(errorResponse.getErrorMessage(), errorResponse.getErrorCode());
     }
     //RESET_CONTENT
     @Override
@@ -95,7 +95,7 @@ public class exceptionHandlerAdvice extends ResponseEntityExceptionHandler
                 ,ex.getLocalizedMessage()
                 , request.getDescription(false)
                 , System.currentTimeMillis());
-        return new ResponseEntity(errorResponse.getErrorMessage(), errorResponse.getErrorCode());
+        return new ResponseEntity<>(errorResponse.getErrorMessage(), errorResponse.getErrorCode());
     }
     //INTERNAL_SERVER_ERROR
     @Override
@@ -108,6 +108,6 @@ public class exceptionHandlerAdvice extends ResponseEntityExceptionHandler
                 ,ex.getLocalizedMessage()
                 , request.getDescription(false)
                 , System.currentTimeMillis());
-        return new ResponseEntity(errorResponse.getErrorMessage(), errorResponse.getErrorCode());
+        return new ResponseEntity<>(errorResponse.getErrorMessage(), errorResponse.getErrorCode());
     }
 }

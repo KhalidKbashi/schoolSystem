@@ -10,6 +10,6 @@ import java.util.UUID;
 @Repository
 public interface subjectRepo extends CrudRepository<subject, UUID>
 {
-    public subject findByName(String name);
-    public Optional<subject> findById(UUID Id);
+    subject findByName(String name);
+    Optional<subject> findById(UUID Id);
 }

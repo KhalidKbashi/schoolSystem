@@ -1,10 +1,10 @@
-package com.school.system.HATEOAS.resourceSupports;
+package com.school.system.HATEOAS.models;
 
 import com.school.system.entities.student;
 import com.school.system.entities.subject;
 import lombok.Getter;
-import org.springframework.hateoas.Link;
 import org.springframework.hateoas.RepresentationModel;
+import org.springframework.hateoas.server.core.Relation;
 
 import javax.persistence.CascadeType;
 import javax.persistence.FetchType;
@@ -13,12 +13,13 @@ import javax.validation.constraints.*;
 import java.util.Collection;
 
 @Getter
+@Relation(value = "student",collectionRelation = "students")
 public class studentModel extends RepresentationModel<studentModel>
 {
     @NotBlank
     @NotEmpty
     @Pattern(regexp = "[A-Za-z\\s]{3,}")
-    private String name;
+    private final String name;
     //Copy Constructor
     public studentModel(student student)
     {
@@ -28,7 +29,7 @@ public class studentModel extends RepresentationModel<studentModel>
     }
 
     @Min(12) @Max(23)
-    private int age;
+    private final int age;
 
     @ManyToMany(mappedBy = "students", cascade = {CascadeType.MERGE, CascadeType.DETACH,
             CascadeType.PERSIST, CascadeType.REFRESH}, fetch = FetchType.EAGER)
