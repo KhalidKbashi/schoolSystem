@@ -31,15 +31,18 @@ public class studentService implements templateService<student, studentDTO>
         this.mapper = new ElMapper<>
                 (
                         //Function to change Student Object to StudentDTO Object -toDTO()
-                        student -> new studentDTO(student.getName(), student.getAge(), (String[]) student.getSubjects()
-                                .stream().map(subject -> subject.getId()).toArray())
+                        student -> new studentDTO(student.getName(), student.getAge(), student.getSubjects()
+                                .stream().map(subject -> subject.getId().toString())
+                                .peek( ss -> System.out.println("toDTO method id : "+ss))
+                                .collect(Collectors.toList()))
                         ,
                         //Function to change StudentDTO Object to Student Object -toEntity()
                         studentDTO -> new student(null, studentDTO.getName(), studentDTO.getAge(),
-                                Arrays
-                                        .stream(studentDTO.getSubject())
+                                        studentDTO.getSubject()
+                                        .stream()
                                         .distinct()
                                         .map(uuid -> this.subjectService.get(UUID.fromString(uuid)))
+                                                .peek(subject -> System.out.println("toEntity method id : "+subject.getId()+" "+subject.getName()))
                                         .collect(Collectors.toCollection(ArrayList::new)))
                         ,
                         //Function to Convert Subject UUID Collection to full subject Object
@@ -52,13 +55,21 @@ public class studentService implements templateService<student, studentDTO>
     @Override
     public UUID add(studentDTO studentDTO)
     {
-        return this.studentRepo.save(mapper.toEntityObject(studentDTO)) .getId();
+        student student = mapper.toEntityObject(studentDTO);
+        System.out.println("\nADDING METHOD "+student.getName()
+                +" subjects :"+student.getSubjects());
+        // THE PROBLEM WHEN SAVING
+        return this.studentRepo.save(student).getId();
     }
 
     @Override
     public student get(UUID id)
     {
         Optional<student> temp = this.studentRepo.findById(id);
+
+        System.out.println("\nGETTING method "+temp.get().getName()+" subjects :"
+                +temp.get().getSubjects());
+
         return temp.orElse(null);
     }
 
@@ -93,8 +104,8 @@ public class studentService implements templateService<student, studentDTO>
 
             if(studentDTO.getSubject()==null)
                 target.get().getSubjects()
-                        .addAll(mapper.uuidsToEntitiesConverter(Arrays.stream(studentDTO.getSubject()
-                        ).distinct().map(s -> UUID.fromString(s)).collect(Collectors.toList())));
+                        .addAll(mapper.uuidsToEntitiesConverter(studentDTO.getSubject().stream()
+                                .distinct().map(s -> UUID.fromString(s)).collect(Collectors.toList())));
 
             this.studentRepo.save(target.get());
         }

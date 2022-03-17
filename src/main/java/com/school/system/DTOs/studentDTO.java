@@ -8,6 +8,7 @@ import lombok.Setter;
 import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -25,5 +26,5 @@ public class studentDTO implements Serializable
     @Min(12) @Max(25)
     private int age;
 
-    private String[] subject;
+    private List<String> subject;
 }

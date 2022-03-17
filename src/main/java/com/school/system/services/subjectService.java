@@ -64,6 +64,10 @@ public class subjectService implements templateService<subject,subjectDTO>
     @Override
     public UUID add(subjectDTO subjectDTO)
     {
+        /*this.subjectRepo.save(new subject().builder().name("Calculus").numOfHours(3).teachers(null).students(null).build());
+        this.subjectRepo.save(new subject().builder().name("Discrete Mathematics").numOfHours(2).teachers(null).students(null).build());
+        this.subjectRepo.save(new subject().builder().name("Arabic").numOfHours(3).teachers(null).students(null).build());
+        this.subjectRepo.save(new subject().builder().name("Numeric Analysis").numOfHours(3).teachers(null).students(null).build());*/
         return this.subjectRepo.save(mapper.toEntityObject(subjectDTO)
                 .builder()
 /*

@@ -70,8 +70,7 @@ public class studentController
         if(Objects.isNull(studentDTO)) //works when the assertion in the entity class get removed
             throw new NotAcceptableDataException("Student data is not send probably");
 
-        System.out.println("HIIIIIIIIIIIIIIIIIIIIIIii");
-        Arrays.stream(studentDTO.getSubject()).forEach(uuid -> System.out.println("id "+uuid));
+        studentDTO.getSubject().forEach(uuid -> System.out.println("id "+uuid));
 
         return this.studentService.add(studentDTO);
     }
